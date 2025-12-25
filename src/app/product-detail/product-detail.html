@@ -1,0 +1,136 @@
+<!-- Loading State -->
+<div class="loading" *ngIf="loading">
+  <p>Loading product details...</p>
+</div>
+
+<!-- Error State -->
+<div class="error" *ngIf="hasError">
+  <p>Failed to load product details.</p>
+  <button (click)="loadProductDetails()">Retry</button>
+  <button (click)="goBack()">Back to Products</button>
+</div>
+
+<!-- Product Details -->
+<div class="product-detail" *ngIf="!loading && !hasError && product">
+  <!-- Navigation -->
+  <div class="navigation">
+    <button class="back-btn" (click)="goBack()">← Back to Products</button>
+    <button class="home-btn" (click)="goToHome()">Home</button>
+  </div>
+
+  <!-- Product Header -->
+  <div class="product-header">
+    <div class="product-images">
+      <div class="main-image">
+        <img [src]="product.thumbnail" [alt]="product.title" />
+      </div>
+      <div class="image-gallery">
+        <img 
+          *ngFor="let img of product.images" 
+          [src]="img" 
+          [alt]="product.title"
+          class="gallery-image"
+        />
+      </div>
+    </div>
+
+    <div class="product-info">
+      <h1>{{ product.title }}</h1>
+      <p class="brand">Brand: {{ product.brand }}</p>
+      
+      <div class="price-section">
+        <p class="current-price">{{ formatPrice(product.price.current, product.price.currency) }}</p>
+        <p class="original-price" *ngIf="product.price.beforeDiscount > product.price.current">
+          {{ formatPrice(product.price.beforeDiscount, product.price.currency) }}
+        </p>
+        <p class="discount" *ngIf="product.price.discountPercentage > 0">
+          {{ product.price.discountPercentage }}% OFF
+        </p>
+      </div>
+
+      <div class="rating-section">
+        <div class="stars">
+          <span class="star" *ngFor="let star of getStarRating(product.rating)" 
+                [class.filled]="star === 1">
+            ★
+          </span>
+        </div>
+        <p class="rating-text">{{ product.rating }}/5</p>
+      </div>
+
+      <div class="stock-section">
+        <p class="stock" [ngClass]="getStockClass(product.stock)">
+          {{ getStockStatus(product.stock) }}
+        </p>
+      </div>
+
+      <div class="category-section">
+        <p class="category">
+          Category: <span>{{ product.category.name }}</span>
+        </p>
+      </div>
+
+      <div class="warranty-section">
+        <p class="warranty">Warranty: {{ product.warranty }} years</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Description -->
+  <div class="product-description">
+    <h2>Description</h2>
+    <p>{{ product.description }}</p>
+  </div>
+
+  <!-- Additional Details -->
+  <div class="product-details">
+    <h2>Product Details</h2>
+    <div class="details-grid">
+      <div class="detail-item">
+        <label>Product ID:</label>
+        <span>{{ product._id }}</span>
+      </div>
+      <div class="detail-item">
+        <label>Brand:</label>
+        <span>{{ product.brand }}</span>
+      </div>
+      <div class="detail-item">
+        <label>Category:</label>
+        <span>{{ product.category.name }}</span>
+      </div>
+      <div class="detail-item">
+        <label>Stock:</label>
+        <span>{{ product.stock }} units</span>
+      </div>
+      <div class="detail-item">
+        <label>Rating:</label>
+        <span>{{ product.rating }}/5</span>
+      </div>
+      <div class="detail-item">
+        <label>Warranty:</label>
+        <span>{{ product.warranty }} years</span>
+      </div>
+      <div class="detail-item">
+        <label>Available Since:</label>
+        <span>{{ formatDate(product.issueDate) }}</span>
+      </div>
+      <div class="detail-item">
+        <label>Price:</label>
+        <span>{{ formatPrice(product.price.current, product.price.currency) }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button class="buy-now-btn" [disabled]="product.stock === 0">
+      Buy Now
+    </button>
+    <button class="add-to-cart-btn" [disabled]="product.stock === 0">
+      Add to Cart
+    </button>
+    <button class="wishlist-btn">
+      Add to Wishlist
+    </button>
+  </div>
+</div>

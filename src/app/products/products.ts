@@ -49,7 +49,6 @@ export class Products implements OnInit, OnDestroy {
           this.hasError = false;
         }),
         catchError((error) => {
-          console.error('API Error:', error);
           this.hasError = true;
           return of('error');
         }),
