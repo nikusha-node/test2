@@ -1,0 +1,151 @@
+<!-- Filter Section -->
+<div class="products-page">
+  <div class="filter-section">
+    <h2>All Products</h2>
+    
+    <!-- Search -->
+    <div class="filter-group">
+      <label for="search">Search:</label>
+      <input 
+        type="text" 
+        id="search" 
+        [(ngModel)]="searchTerm" 
+        placeholder="Search products..."
+      />
+    </div>
+
+    <!-- Price Range -->
+    <div class="filter-group">
+      <label>Price Range:</label>
+      <div class="price-range">
+        <input 
+          type="number" 
+          [(ngModel)]="minPrice" 
+          placeholder="Min"
+          min="0"
+        />
+        <span>-</span>
+        <input 
+          type="number" 
+          [(ngModel)]="maxPrice" 
+          placeholder="Max"
+          min="0"
+        />
+      </div>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="filter-group">
+      <label for="category">Category:</label>
+      <select id="category" [(ngModel)]="selectedCategory">
+        <option value="">All Categories</option>
+        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+      </select>
+    </div>
+
+    <!-- Brand Filter -->
+    <div class="filter-group">
+      <label for="brand">Brand:</label>
+      <select id="brand" [(ngModel)]="selectedBrand">
+        <option value="">All Brands</option>
+        <option *ngFor="let brand of brands" [value]="brand">{{ brand }}</option>
+      </select>
+    </div>
+
+    <!-- Sort Options -->
+    <div class="filter-group">
+      <label>Sort by:</label>
+      <div class="sort-options">
+        <button 
+          [class.active]="sortOrder === 'asc'" 
+          (click)="sortProducts('asc')"
+        >
+          Price: Low to High
+        </button>
+        <button 
+          [class.active]="sortOrder === 'desc'" 
+          (click)="sortProducts('desc')"
+        >
+          Price: High to Low
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter Actions -->
+    <div class="filter-actions">
+      <button class="apply-filters" (click)="applyFilters()">Apply Filters</button>
+      <button class="clear-filters" (click)="clearFilters()">Clear All Filters</button>
+    </div>
+  </div>
+
+  <!-- Results Info -->
+  <div class="results-info" *ngIf="!loading && !hasError">
+    <p>Showing {{ paginatedProducts.length }} of {{ filteredProducts.length }} products</p>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="loading">
+    <p>Loading products...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error" *ngIf="hasError">
+    <p>Failed to load products. Please try again.</p>
+    <button (click)="ngOnInit()">Retry</button>
+  </div>
+
+  <!-- No Results -->
+  <div class="no-results" *ngIf="!loading && !hasError && filteredProducts.length === 0">
+    <p>No products found matching your filters.</p>
+    <button (click)="clearFilters()">Clear Filters</button>
+  </div>
+
+  <!-- Products Grid -->
+  <div class="product-container" *ngIf="!loading && !hasError && paginatedProducts.length">
+    <div class="product-card" *ngFor="let product of paginatedProducts" (click)="navigateToProductDetails(product._id)">
+      
+      <!-- Product thumbnail -->
+      <img [src]="product.thumbnail" [alt]="product.title" class="product-image" />
+
+      <!-- Product title -->
+      <h2>{{ product.title }}</h2>
+
+      <!-- Product price -->
+      <p class="price">{{ product.price.current | currency: product.price.currency }}</p>
+
+      <!-- Optional: brand & rating -->
+      <p class="brand">Brand: {{ product.brand }}</p>
+      <p class="rating">Rating: {{ product.rating }}/5</p>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="!loading && !hasError && totalPages > 1">
+    <button 
+      class="pagination-btn" 
+      [disabled]="currentPage === 1"
+      (click)="goToPreviousPage()"
+    >
+      Previous
+    </button>
+    
+    <div class="page-numbers">
+      <button 
+        *ngFor="let page of getPageNumbers()" 
+        class="page-btn"
+        [class.active]="currentPage === page"
+        (click)="changePage(page)"
+      >
+        {{ page }}
+      </button>
+    </div>
+    
+    <button 
+      class="pagination-btn" 
+      [disabled]="currentPage === totalPages"
+      (click)="goToNextPage()"
+    >
+      Next
+    </button>
+  </div>
+</div>
