@@ -1,35 +1,17 @@
-<!-- Loading indicator -->
-<div *ngIf="loading">Loading...</div>
-
-<!-- Error message -->
-<div *ngIf="hasError">Something went wrong. Please try again later.</div>
-
-<!-- Product container -->
 <div class="product-container" *ngIf="!loading && !hasError && filteredProducts.length">
   <div class="product-card" *ngFor="let product of filteredProducts" (click)="navigateToProductDetails(product._id)">
     
+    <!-- Product thumbnail -->
+    <img [src]="product.thumbnail" [alt]="product.title" class="product-image" />
+
     <!-- Product title -->
     <h2>{{ product.title }}</h2>
-    
+
     <!-- Product price -->
-    <p>Current: {{ product.price.current | currency: product.price.currency }}</p>
-    
-    <!-- Product thumbnail -->
-    <img [src]="product.thumbnail" [alt]="product.title" class="thumbnail" />
-    
-    <!-- Product images gallery -->
-    <div class="images" *ngIf="product.images && product.images.length">
-      <img *ngFor="let img of product.images" [src]="img" [alt]="product.title" />
-    </div>
+    <p class="price">{{ product.price.current | currency: product.price.currency }}</p>
 
-    <!-- Optional: other info -->
-    <p>Brand: {{ product.brand }}</p>
-    <p>Stock: {{ product.stock }}</p>
-    <p>Rating: {{ product.rating }}</p>
+    <!-- Optional: brand & rating -->
+    <p class="brand">Brand: {{ product.brand }}</p>
+    <p class="rating">Rating: {{ product.rating }}</p>
   </div>
-</div>
-
-<!-- No products found -->
-<div *ngIf="!loading && !hasError && filteredProducts.length === 0">
-  No products available.
 </div>
