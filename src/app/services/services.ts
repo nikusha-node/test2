@@ -11,7 +11,7 @@ public http = inject(HttpClient)
 
   public getAllProducts(): Observable<ApiResponse> {
     return this.http.get<ApiResponse>(
-      "https://api.everrest.educata.dev/shop/products/all"
+      "https://api.everrest.educata.dev/shop/products/all?page_index=1&page_size=38"
     )
   }
 
